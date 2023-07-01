@@ -86,3 +86,47 @@ def recursively_undump_the_blueprint_book_into_files(undump_blueprint_book: str,
     undump_blueprint_book = json.loads(undump_blueprint_book)
     recursive_blueprint_book(undump_blueprint_book, path)
     return
+
+
+def recursively_dump_the_blueprint_book_into_files(path: str) -> dict:
+    """
+    递归压缩异星工场的蓝图文件夹/文件到蓝图字典
+    :param path:要压缩的蓝图文件夹
+    :return:压缩好的蓝图字典
+    """
+    index = 0
+    # 先初始化当前的文件夹的蓝图书 然后把return给弄回来
+    return_dict = {
+        "blueprints": []
+    }
+    # 判断blueprint-book的其他属性 由于一定是文件夹所以就不管特判
+    if os.path.exists(os.path.join(path, '_intro_')) and os.path.getsize(os.path.join(path, '_intro_')) != 0:
+        with open(os.path.join(path, '_intro_'), 'r', encoding='utf-8') as f:
+            return_dict.update(json.loads(f.read()))
+    else:
+        return_dict.update(
+            {
+                "item": "blueprint-book",
+                "active_index": 0,
+                "label": os.path.basename(path)
+            })
+    # 遍历 并且开始递归
+    for item in os.listdir(path):
+        item_path = os.path.join(path, item)
+        if os.path.isfile(item_path) and os.path.basename(item_path) == '_intro_':
+            continue  # intro之前加过了 不需要管了
+        elif os.path.isdir(item_path):
+            a = recursively_dump_the_blueprint_book_into_files(item_path)
+            a.update({"index": index})
+            return_dict['blueprints'].append(a)
+            index += 1
+        else:
+            with open(item_path, 'r', encoding='utf-8') as f:
+                a = json.loads(undump(f.read()))
+                a['index'] = index
+                return_dict['blueprints'].append(a)
+            index += 1
+
+    return {
+        "blueprint_book": return_dict
+    }
