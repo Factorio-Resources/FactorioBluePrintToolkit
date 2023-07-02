@@ -37,6 +37,14 @@ def recursively_undump_the_blueprint_book_into_files(undump_blueprint_book: str,
     def process_item(item, item_type, default_label, folder_path):
         del item['index']
         item[item_type].setdefault("label", default_label)
+        invalid_chars = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']  # 在 Windows 中不能用于文件名的字符
+        fullwidth_chars = ['＜', '＞', '：', '＂', '／', '＼', '｜', '？', '＊']  # 对应的全角字符
+        for invalid_char, fullwidth_char in zip(invalid_chars, fullwidth_chars):  # 替换无效字符
+            item[item_type]['label'] = item[item_type]['label'].replace(invalid_char, fullwidth_char)
+        item[item_type]['label'] = item[item_type]['label'].rstrip()  # 删除末尾空格
+        if item[item_type]['label'] and item[item_type]['label'][-1] == '.':  # 将末尾的半角 . 替换为全角 ．
+            item[item_type]['label'] = item[item_type]['label'][:-1] + '．'
+
         file_path = os.path.join(folder_path, item[item_type]['label'])
         e = 0
         while os.path.exists(f'{file_path}.txt'):
@@ -69,7 +77,7 @@ def recursively_undump_the_blueprint_book_into_files(undump_blueprint_book: str,
         os.mkdir(folder_path)
         # 创建_intro_蓝图说明文件
         with open(f"{folder_path}/_intro_", 'w', encoding='utf-8') as f:
-            f.write(json.dumps({k: v for k, v in blueprint_book.items() if k != 'blueprints'},
+            f.write(json.dumps({k: v for k, v in blueprint_book.items() if k != 'blueprints' and k != 'label'},
                                ensure_ascii=False, indent=4))
         # 开始遍历
         for i in blueprint_book['blueprints']:
@@ -103,6 +111,7 @@ def recursively_dump_the_blueprint_book_into_files(path: str) -> dict:
     if os.path.exists(os.path.join(path, '_intro_')) and os.path.getsize(os.path.join(path, '_intro_')) != 0:
         with open(os.path.join(path, '_intro_'), 'r', encoding='utf-8') as f:
             return_dict.update(json.loads(f.read()))
+        return_dict.update({"label": os.path.basename(path)})
     else:
         return_dict.update(
             {
@@ -124,6 +133,8 @@ def recursively_dump_the_blueprint_book_into_files(path: str) -> dict:
             with open(item_path, 'r', encoding='utf-8') as f:
                 a = json.loads(undump(f.read()))
                 a['index'] = index
+                unknown_key = [key for key in a.keys() if key != 'index'][0]
+                a[unknown_key]['label'] = os.path.splitext(os.path.basename(item_path))[0]
                 return_dict['blueprints'].append(a)
             index += 1
 
