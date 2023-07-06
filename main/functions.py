@@ -1,8 +1,8 @@
 # 这里是具体功能的实现 可以直接进行调用
 # -*- coding: utf-8 -*-
-import base64
+from base64 import b64encode, b64decode
 import json
-import zlib
+from zlib import compress, decompress
 import os
 
 
@@ -12,8 +12,8 @@ def undump(undump_str: str) -> str:
     :param undump_str:要解压的字符串
     :return:返回解压完成后的字符串 要自己解析成字典
     """
-    return zlib.decompress(
-        base64.b64decode(undump_str[1:].encode('utf-8'))
+    return decompress(
+        b64decode(undump_str[1:].encode('utf-8'))
     ).decode('utf-8')
 
 
@@ -23,7 +23,7 @@ def dump(dump_dict: dict) -> str:
     :param dump_dict: 要压缩的字典
     :return: 压缩好后的蓝图字符串
     """
-    return f"0{base64.b64encode(zlib.compress(json.dumps(dump_dict, indent=None).encode('utf-8'), level=9)).decode('utf-8')}"
+    return f"0{b64encode(compress(json.dumps(dump_dict, indent=None).encode('utf-8'), level=9)).decode('utf-8')}"
 
 
 def recursively_undump_the_blueprint_book_into_files(undump_blueprint_book: str, path) -> None:
