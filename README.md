@@ -6,10 +6,12 @@
 * 将json(dict)形式的蓝图转换会蓝图字符串
 * 递归解压一个蓝图书字符串，并且最终只保留蓝图作为文件,蓝图书加载成文件夹
 * 递归打包一个蓝图文件夹回到蓝图书
+## 使用
 
 ## 功能细节
-> 你可以在[这里](https://wiki.factorio.com/Blueprint_string_format#:~:text=A%20blueprint%20string%20is%20a%20JSON%20representation%20of,currently%200%20%28for%20all%20Factorio%20versions%20through%201.1%29.)
->阅读到异星工场的蓝图说明
+> 你可以在[这里](https://wiki.factorio.com/Blueprint_string_format#:~:text=A%20blueprint%20string%20is%20a%20JSON%20representation%20of,currently%200%20%28for%20all%20Factorio%20versions%20through%201.1%29.)阅读到异星工场的蓝图说明
+> ***
+> 使用的nuitka的打包命令:`nuitka --standalone --mingw64 --show-memory --show-progress --follow-imports --remove-output --output-dir=../exe --onefile main.py`
 * 解压蓝图/蓝图书字符串为json
   * 函数名: undump
   * 输入:要解压的字符串 输出:解压完成的json字符串
@@ -48,4 +50,5 @@
   } 
     ```  
   所有的文件夹内的内容名称都以**文件名称**存储到返回值中而不是其真实名称(例如一个蓝图文件的蓝图代码叫做a,但是这个蓝图文件.txt名叫b,那么最终压缩完成你看到的蓝图名称还是b)
-  当然,你也可以把你的蓝图书字符串放在其中的一个文件中，仍然会正常的加入字典中
+  当然,你也可以把你的蓝图书字符串放在其中的一个文件中，仍然会正常地加入字典中
+
