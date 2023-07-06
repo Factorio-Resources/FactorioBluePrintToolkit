@@ -1,4 +1,5 @@
 # 这里是具体功能的实现 可以直接进行调用
+# -*- coding: utf-8 -*-
 import base64
 import json
 import zlib
@@ -20,7 +21,7 @@ def dump(dump_dict: dict) -> str:
     """
     压缩异星工场的蓝图文件
     :param dump_dict: 要压缩的字典
-    :return: 压缩好后的蓝图文件
+    :return: 压缩好后的蓝图字符串
     """
     return f"0{base64.b64encode(zlib.compress(json.dumps(dump_dict, indent=None).encode('utf-8'), level=9)).decode('utf-8')}"
 
@@ -130,12 +131,15 @@ def recursively_dump_the_blueprint_book_into_files(path: str) -> dict:
             return_dict['blueprints'].append(a)
             index += 1
         else:
-            with open(item_path, 'r', encoding='utf-8') as f:
-                a = json.loads(undump(f.read()))
-                a['index'] = index
-                unknown_key = [key for key in a.keys() if key != 'index'][0]
-                a[unknown_key]['label'] = os.path.splitext(os.path.basename(item_path))[0]
-                return_dict['blueprints'].append(a)
+            try:
+                with open(item_path, 'r', encoding='utf-8') as f:
+                    a = json.loads(undump(f.read()))
+                    a['index'] = index
+                    unknown_key = [key for key in a.keys() if key != 'index'][0]
+                    a[unknown_key]['label'] = os.path.splitext(os.path.basename(item_path))[0]
+                    return_dict['blueprints'].append(a)
+            except Exception as e:
+                raise Exception(f"Error Blueprint: '{os.path.abspath(item_path)}' \nERROR:{str(e)}")
             index += 1
 
     return {
