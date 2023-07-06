@@ -6,12 +6,37 @@
 * 将json(dict)形式的蓝图转换会蓝图字符串
 * 递归解压一个蓝图书字符串，并且最终只保留蓝图作为文件,蓝图书加载成文件夹
 * 递归打包一个蓝图文件夹回到蓝图书
+## 下载
+你可以在[releases](https://github.com/Factorio-Resources/FactorioBluePrintToolkit/releases/latest)下载  
+如果你有python环境,可以下载FactorioBluePrintToolkit_source_code压缩包,解压后运行**setup_lib**来安装需要的库  
+否则请下载FactorioBluePrintToolkit(**推荐**)
 ## 使用
+> 如果从源代码启动,请将下面的FactorioBluePrintToolkit.exe换成FactorioBluePrintToolkit.py 并且在前面加上python(例如```python FactorioBluePrintToolkit.py ...```)
 
+首先,请[下载](#下载)FactorioBluePrintToolkit,随后在FactorioBluePrintToolkit的文件夹下打开一个命令行(如PowerShell)   
+输入格式是 ./FactorioBluePrintToolkit.exe 功能 --i 输入路径 --o 输出路径 (如果你没有更改名字的话)  
+#### 所有功能文档
+* undump
+  * 解压蓝图字符串到json
+  * --i 输入的蓝图文件路径 
+  * --o 输出的蓝图文件路径
+* dump
+  * 压缩蓝图json到蓝图字符串
+  * --i 输入的蓝图json文件路径 
+  * --o 输出的蓝图文件路径
+* undump_blueprintBook_to_files
+  * 解压蓝图书到只剩下蓝图文件 蓝图书解压为文件夹
+  * --i 输入的蓝图书字符串文件路径 
+  * --o 输出的蓝图书文件夹的位置
+* dump_blueprintFolder_to_blueprintBook
+  * 将解压成蓝图的蓝图书转为单个的蓝图书字符串
+  * --i 要压缩的蓝图书文件夹
+  * --o 输出的蓝图书字符串的文件位置
 ## 功能细节
 > 你可以在[这里](https://wiki.factorio.com/Blueprint_string_format#:~:text=A%20blueprint%20string%20is%20a%20JSON%20representation%20of,currently%200%20%28for%20all%20Factorio%20versions%20through%201.1%29.)阅读到异星工场的蓝图说明
-> ***
-> 使用的nuitka的打包命令:`nuitka --standalone --mingw64 --show-memory --show-progress --follow-imports --remove-output --output-dir=../exe --onefile main.py`
+***
+使用的nuitka的打包命令:
+```nuitka --standalone --mingw64 --show-memory --show-progress --follow-imports --remove-output --output-dir=../exe --onefile main.py```
 * 解压蓝图/蓝图书字符串为json
   * 函数名: undump
   * 输入:要解压的字符串 输出:解压完成的json字符串
